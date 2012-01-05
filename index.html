@@ -3,11 +3,11 @@
 <head>
     <meta charset="utf-8">
     <title>Backbone.knockout.js</title>
-    <script src="jquery-1.7.js"></script>
-    <script src="underscore.js"></script>
-    <script src="backbone.js"></script>
-    <script src="knockout-2.0.js"></script>
-    <script src="backbone.knockout.js."></script>
+    <script src="src/jquery-1.7.js"></script>
+    <script src="src/underscore.js"></script>
+    <script src="src/backbone.js"></script>
+    <script src="src/knockout-2.0.js"></script>
+    <script src="backbone.knockout.js?v0"></script>
 </head>
 <body>
 
@@ -33,6 +33,7 @@
 
     });
 
+    /*
     var view = Backbone.View.extend({
 
         el: $('#view'),
@@ -45,10 +46,12 @@
         },
 
         initialize: function() {
-            this.knockbone({model: this.model, observe: ['numbers']});
+            //this.knockbone({model: this.model, observe: ['numbers']});
+            //this.knockbone({model: this.model, observe: ['numbers', 'name']});
+            //this.knockbone({model: this.model});
+            this.knockbone();
 
             this.model.set({name: 'fatihdddff'});
-
 
 
         }
@@ -56,6 +59,31 @@
     });
     new view({model: new __model()});
 
+    */
+
+    var view = Backbone.Knockbone.extend({
+
+        el: $('#view'),
+
+        bindings: {
+            test: function() {
+                this.name('fatihsdads');
+                this.numbers.push({a:3});
+            }
+        },
+
+        preKnockbone: function() {
+
+        },
+
+        postKnockbone: function() {
+
+            this.model.set({name: 'fatihdddff'});
+
+        }
+
+    });
+    new view({model: new __model()});
 
 </script>
 </body>

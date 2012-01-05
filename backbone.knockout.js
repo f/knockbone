@@ -18,6 +18,9 @@
 
             var self = this;
 
+            if (this.preKnockbone)
+                this.preKnockbone.apply(this, arguments);
+
             //Argumanla gelen diğerini eziyor.
             if (options.model)
                 this.model = options.model;
@@ -79,13 +82,16 @@
                 ko.applyBindings(model.attributes, this);
             });
 
+            if (this.postKnockbone)
+                this.postKnockbone.apply(this, arguments);
+
         }
 
     };
-    //Eğer child initializer üzerine yazarsa, this.knockbone.apply(this, arguments); demeli
-    Knockbone.initialize = Knockbone.knockbone;
-
     //Mixin.
     Backbone.View = Backbone.View.extend(Knockbone);
+
+    //Yeni üst sınıf oluşturuluyor.
+    Backbone.Knockbone = Backbone.View.extend({initialize: Knockbone.knockbone});
 
 }).call(this, this.Backbone, this._, this.jQuery, this.ko);
