@@ -13,7 +13,7 @@
 
 <div id="view">
     <input data-bind="value: name">
-    <span data-bind="text: name"></span>
+    <span data-bind="text: name, visible: name() == 'fatih'"></span>
     <ul data-bind="foreach: numbers">
         <li data-bind="text: a"></li>
     </ul>
@@ -67,7 +67,7 @@
 
         bindings: {
             test: function() {
-                this.name('fatihsdads');
+                this.name('fatih');
                 this.numbers.push({a:3});
             }
         },
