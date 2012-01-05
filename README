@@ -1,3 +1,80 @@
-This file was created by JetBrains WebStorm 3.0.1 for binding GitHub repository
-This file was modified by JetBrains WebStorm 3.0.1 for binding GitHub repository
-This file was modified by JetBrains WebStorm 3.0.1 for binding GitHub repository
+Knockbone.js v0.1 Alpha
+=======================
+
+Backbone.js and Knockout.js Entegration Extension for Backbone.js
+
+With knockbone, you can entegrate Knockout into your Backbone application. In fact, I don't prefer using Knockout.js
+Because, Backbone already implements Knockout's feautres. You can reparse the HTML using binding events in Backbone.
+
+But, many people love Knockout. I do like, too. But I love Backbone. And it is not hard to make them work in peace.
+
+The first commits are not well-documented. And, for now, It cannot manage collections. But it will.
+
+Simply:
+
+It will add a method named "knockbone" into your Backbone.View super class. So you can use that method all of your views.
+If you don't want to initialize everytime, you can use "Backbone.Knockbone" super class to implement it. It will make your
+initialize method unusable. So I added "postKnockbone" and "preKnockbone" hooks.
+
+And you must use binding functions into "bindings" object literal.
+
+~~~~~~~~~~~~~
+
+    var view = Backbone.View.extend({
+
+        // This is the context. Everything will be in it.
+        el: $('#view'),
+
+        // Knockout binding methods.
+        bindings: {
+            test: function() {
+                this.name('fatihsdads');
+                this.numbers.push({a:3});
+            }
+        },
+
+        //The initializer method of Backbone.
+        initialize: function() {
+            // You can define what attributes to observe.
+            // this.knockbone({model: this.model, observe: ['numbers']});
+            // this.knockbone({model: this.model, observe: ['numbers', 'name']});
+
+            // If you don't give any observe, it will observe all. If you don't want to observe anything, please don't use Knockbone.
+            // this.knockbone({model: this.model});
+
+            // If you don't specify what the model is, it will use View's own model.
+            this.knockbone();
+
+            // Setters will affect backbone models.
+            this.model.set({name: 'fatihdddff'});
+
+        }
+
+    });
+
+    var view = Backbone.Knockbone.extend({
+
+        el: $('#view'),
+
+        bindings: {...},
+
+        preKnockbone: function() {
+
+            // You can make something before knockbone initialized.
+
+        },
+
+        postKnockbone: function() {
+
+            // You can make something AFTER knockbone initialized.
+
+            // This will fire observer method of Knockbone model.
+            this.model.set({name: 'hello'});
+
+        }
+    });
+
+~~~~~~~~~~~~~
+
+NOTE: Modelless Views will give an exception!
+NOTE 2: You have to manage your sync method for now! Your models will be more complex!
