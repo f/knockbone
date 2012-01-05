@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Backbone.knockout.js</title>
+    <base href="file:///home/fka/Dropbox/">
+    <script src="jquery-1.7.js"></script>
+    <script src="underscore.js"></script>
+    <script src="backbone.js"></script>
+    <script src="knockout-2.0.js"></script>
+</head>
+<body>
+
+<div id="view">
+    <input data-bind="value: name">
+    <span data-bind="text: name"></span>
+    <ul data-bind="foreach: numbers">
+        <li data-bind="text: a"></li>
+    </ul>
+    <button data-bind="click: test">test</button>
+</div>
+
+<script>
+    (function (Backbone, _, $, ko) {
+
+        "use strict";
+
+        //Knockbone prototype
+        var Knockbone = {
+
+            knockbone: function(options) {
+
+                var self = this;
+
+                //Argumanla gelen diğerini eziyor.
+                if (options.model)
+                    this.model = options.model;
+
+                //Hala model yoksa hiç gelmemiş.
+                if (!this.model || typeof this.model != 'object')
+                    throw new Error("You cannot use views without models on Knockbones.");
+
+                //Scope içi düzen sağlanıyor.
+                var model = this.model;
+                model.isKnocked = true;
+
+                var toObserve = options.observe || model.attributes;
+
+                function observer() {
+                    _.each(toObserve, function(value, key) {
+                        if (_.isArray(toObserve))
+                        {
+                            key = toObserve[key]; value = model.attributes[key];
+                        }
+                        model.attributes[key] = ko[_.isArray(value)?'observableArray':'observable'](value);
+                    });
+                }
+
+                var __setter = model.set;
+                model.set = function(key, value, options) {
+                    //Backbone'un setter'i uygulanıyor
+                    var _model = __setter.apply(this, arguments);
+                    observer.call(this);
+                };
+
+                observer.call(this);
+
+                if (this.bindings)
+                    $.extend(model.attributes, this.bindings);
+
+                //Birden fazla view gelebilir.
+                $(this.el).each(function() {
+                    ko.applyBindings(model.attributes, this);
+                });
+
+            }
+
+        };
+        //Eğer child initializer üzerine yazarsa, this.knockbone.apply(this, arguments); demeli
+        Knockbone.initialize = Knockbone.knockbone;
+
+        //Mixin.
+        Backbone.View = Backbone.View.extend(Knockbone);
+
+    }).call(this, this.Backbone, this._, this.jQuery, this.ko);
+
+
+    var __model = Backbone.Model.extend({
+
+        defaults: {
+            name: 'kadir',
+            surname : 'akin',
+            numbers: [{a:1},{a:2}]
+        }
+
+    });
+
+    var view = Backbone.View.extend({
+
+        el: $('#view'),
+
+        bindings: {
+            test: function() {
+                this.name('fatih');
+                this.numbers.push({a:3});
+            }
+        },
+
+        initialize: function() {
+            this.knockbone({model: this.model});
+
+            this.model.set({name: 'fatihdddff'});
+
+
+
+        }
+
+    });
+    new view({model: new __model()});
+
+
+</script>
+</body>
+</html>
